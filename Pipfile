@@ -10,6 +10,12 @@ fastapi-cli = "*"
 alembic = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
+passlib = "*"
+bcrypt = "*"
+jose = "*"
+jwt = "*"
+python-jose = "*"
+pydantic-settings = "*"
 
 [dev-packages]
 
