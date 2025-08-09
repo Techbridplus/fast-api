@@ -1,14 +1,21 @@
 from fastapi import FastAPI
-# from sqlalchemy.orm import Session
-# from typing import List, Optional
-
-from . import models
-from .database import engine
 from .routers import todo,user,auth
-# Create database tables
-models.Base.metadata.create_all(bind=engine)
+from fastapi.middleware.cors import CORSMiddleware
+
+# models.Base.metadata.create_all(bind=engine)   if we use alembic, we don't need this line
+# Base.metadata.create_all(bind=engine)  # Uncomment if you want to create tables directly
 
 app = FastAPI()
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(todo.router)
 app.include_router(user.router)

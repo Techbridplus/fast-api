@@ -1,11 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
+from .config import settings
 
 # PostgreSQL connection string
 # You can modify these values according to your PostgreSQL setup
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = f"postgresql+psycopg2://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 
 # Create SQLAlchemy engine
 engine = create_engine(DATABASE_URL,echo=True)

@@ -7,7 +7,6 @@ name = "pypi"
 uvicorn = "*"
 fastapi = {extras = ["standard"], version = "*"}
 fastapi-cli = "*"
-alembic = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
 passlib = "*"
@@ -16,6 +15,7 @@ jose = "*"
 jwt = "*"
 python-jose = "*"
 pydantic-settings = "*"
+alembic = "*"
 
 [dev-packages]
 
