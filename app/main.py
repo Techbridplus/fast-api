@@ -25,3 +25,9 @@ app.include_router(auth.router)
 @app.get('/')
 def say_hello():
     return {"message":"hello"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    port = 4000
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
