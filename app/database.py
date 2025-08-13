@@ -6,7 +6,7 @@ from .config import settings
 # PostgreSQL connection string
 # You can modify these values according to your PostgreSQL setup
 # DATABASE_URL = settings.database_url
-DATABASE_URL = f"postgresql+psycopg2://{settings.database_username}:{settings.database_password}@{settings.database_host}:{settings.database_port}/{settings.database_name}"
+DATABASE_URL = f"postgresql+psycopg2://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 
 # Create SQLAlchemy engine
 engine = create_engine(DATABASE_URL,echo=True)
