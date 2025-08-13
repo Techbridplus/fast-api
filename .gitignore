@@ -67,8 +67,7 @@ venv.bak/
 # Pipenv
 Pipfile.lock
 
-# Alembic
-alembic/versions/
+
 
 # Database
 *.sqlite3
