@@ -53,6 +53,9 @@ def delete_todo(id: int, db: Session = Depends(get_db), current_user: int = Depe
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"todo with id: {id} does not exist")
 
+    if todo.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="Not authorized to perform requested action")
 
     todo_query.delete(synchronize_session=False)
     db.commit()

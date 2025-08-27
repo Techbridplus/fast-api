@@ -19,6 +19,8 @@ bcrypt = "==4.0.1"
 
 [dev-packages]
 pytest = "*"
+pytest-asyncio = "*"
+httpx = "==0.25.0"
 
 [requires]
 python_version = "3.13"

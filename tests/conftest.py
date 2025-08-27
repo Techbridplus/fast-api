@@ -1,52 +1,116 @@
+from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from app.database import Base, get_db
 from app.main import app
-from fastapi.testclient import TestClient
+from app.database import get_db
+from app.database import Base
+from app.oauth2 import create_access_token
 from app import models
-import os
 
-# Test database URL
-SQLALCHEMY_DATABASE_URL = f"postgresql://{os.environ.get('DATABASE_USERNAME')}:{os.environ.get('DATABASE_PASSWORD')}@{os.environ.get('DATABASE_HOSTNAME')}:{os.environ.get('DATABASE_PORT')}/{os.environ.get('DATABASE_NAME')}"
+SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:Gaurav6398554020@localhost:5432/fastapi_test'
+# SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
 
-# Create test database engine
+
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-# Create test session
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+TestingSessionLocal = sessionmaker(
+    autocommit=False, autoflush=False, bind=engine)
 
-@pytest.fixture(scope="function")
+
+@pytest.fixture()
 def session():
-    # Create tables
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
-    
-    # Create a db session
     db = TestingSessionLocal()
     try:
         yield db
     finally:
         db.close()
-        
-    # Drop tables after test
-    Base.metadata.drop_all(bind=engine)
 
-@pytest.fixture(scope="function")
+
+@pytest.fixture()
 def client(session):
-    # Override the dependency to use the test database
     def override_get_db():
+
         try:
             yield session
         finally:
             session.close()
-    
-    # Override the get_db dependency
     app.dependency_overrides[get_db] = override_get_db
-    
-    # Create a test client
-    with TestClient(app) as c:
-        yield c
-    
-    # Clean up
-    app.dependency_overrides.clear()
+    yield TestClient(app)
+
+
+@pytest.fixture
+def test_user(client):
+    user_data = {"email": "sanjeev@gmail.com",
+                 "password": "password123"}
+    res = client.post("/users/", json=user_data)
+
+    assert res.status_code == 201
+
+    new_user = res.json()
+    new_user['password'] = user_data['password']
+    return new_user
+
+@pytest.fixture
+def test_user2(client):
+    user_data = {"email": "sanjeev123@gmail.com",
+                 "password": "password123"}
+    res = client.post("/users/", json=user_data)
+
+    assert res.status_code == 201
+
+    new_user = res.json()
+    new_user['password'] = user_data['password']
+    return new_user
+
+@pytest.fixture
+def token(test_user):
+    return create_access_token({"user_id": test_user['id']})
+
+
+@pytest.fixture
+def authorized_client(client, token):
+    client.headers = {
+        **client.headers,
+        "Authorization": f"Bearer {token}"
+    }
+
+    return client
+
+@pytest.fixture
+def test_todos(test_user, session,test_user2):
+    todos_data = [{
+        "title": "first title",
+        "description": "first content",
+        "owner_id": test_user['id']
+    }, {
+        "title": "2nd title",
+        "description": "2nd content",
+        "owner_id": test_user['id']
+    },
+        {
+        "title": "3rd title",
+        "description": "3rd content",
+        "owner_id": test_user['id']
+    }, {
+        "title": "3rd title",
+        "description": "3rd content",
+        "owner_id": test_user2['id']
+    }]
+
+    def create_todo_model(todo):
+        return models.Todo(**todo)
+
+    todo_map = map(create_todo_model, todos_data)
+    todos = list(todo_map)
+
+    session.add_all(todos)
+    # session.add_all([models.Post(title="first title", content="first content", owner_id=test_user['id']),
+    #                 models.Post(title="2nd title", content="2nd content", owner_id=test_user['id']), models.Post(title="3rd title", content="3rd content", owner_id=test_user['id'])])
+    session.commit()
+
+    todos = session.query(models.Todo).all()
+
+    return todos
