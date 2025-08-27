@@ -86,7 +86,7 @@ jobs:
           script: |
             cd ~/app/src
             docker pull gauravjoshiaa1/fastapi:latest
-             docker-compose -f docker-compose-prod.yml down
+            docker-compose -f docker-compose-prod.yml down
             docker-compose --env-file ~/.env -f docker-compose-prod.yml up -d --force-recreate
       # login to our ubuntu
       # cd /app/src

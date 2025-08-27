@@ -24,6 +24,6 @@ app.include_router(auth.router)
 # default 
 @app.get('/')
 def say_hello():
-    return {"message":"hello ok"}
+    return {"message":"hello ok testing 1"}
 
 
