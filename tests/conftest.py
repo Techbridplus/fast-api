@@ -7,9 +7,10 @@ from app.database import get_db
 from app.database import Base
 from app.oauth2 import create_access_token
 from app import models
+from app.config import settings
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:Gaurav6398554020@localhost:5432/fastapi_test'
-# SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
+# SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:Gaurav6398554020@localhost:5432/fastapi_test'
+SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}_test'
 
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
