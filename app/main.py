@@ -7,7 +7,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-origins = ["*"]
+origins = [
+    "https://techbridplus.me",
+    "http://localhost", # Add for local development if needed
+    "http://localhost:8001", # Add for local development if needed
+]
 
 app.add_middleware(
     CORSMiddleware,
