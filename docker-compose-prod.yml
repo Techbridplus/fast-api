@@ -19,9 +19,12 @@ services:
 
   postgres:
     image: postgres
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USERNAME}
     volumes:
       - postgres-db:/var/lib/postgresql/data
 
